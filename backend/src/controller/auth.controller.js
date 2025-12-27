@@ -1,4 +1,4 @@
-import e from "express";
+
 import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken"; 
@@ -128,6 +128,18 @@ export async function onboard(req,res){
             return res.status(404).json({message:"User not found"});
         }
         res.status(200).json({sucess:true, user:updatedUser});
+
+        try {
+            await upsertStreamUser({
+                id: updatedUser._id.toString(),
+                name: updatedUser.fullName,
+                image: updatedUser.profilePic || '',
+            });
+            console.log(`Stream user updated for ${updatedUser.fullName}`);
+        } catch (error) {
+            console.error("Error syncing with Stream:", error);
+
+        }
 
     } catch (error) {
         console.error("Error during onboarding:", error);
