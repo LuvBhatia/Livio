@@ -12,7 +12,7 @@ export async function getRecommendedUsers(req, res) {
             $and:[
                 {_id:{$ne:currentUserId}},
                 {_id:{$nin:currUser.friends}},
-                {isOnboarder:true}
+                {isOnboarded:true}
             ]   
         })
         res.status(200).json(recommendedUsers);
@@ -40,7 +40,7 @@ export async function getMyFriends(req, res) {
 
 export async function sendFriendRequest(req, res) {
     try {
-        const myIdId = req.user.id;
+        const myId = req.user.id;
         const {id:recipientId} = req.params; 
 
         //prevent sending request to oneself
@@ -75,6 +75,7 @@ export async function sendFriendRequest(req, res) {
             recipient:recipientId,
         });
         
+        await friendRequest.save();
         res.status(201).json( friendRequest);
     } catch (error) {
         console.error("Error sending friend request:", error);

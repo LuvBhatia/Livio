@@ -23,7 +23,7 @@ export async function signup(req, res) {
         if (existingUser) {
             return res.status(400).json({ message: "Email is already registered." });
         };
-        const idx=Math.floor(Math.random()*1000)+1;
+        const idx=Math.floor(Math.random()*100)+1; // 1-100 included
         const randomAvatar=`https://avatar.iran.liara.run/public/${idx}.png`;
 
         const newUser = await User.create({
